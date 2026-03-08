@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+<title>Student Management System</title>
+
+<style>
+
+body{
+font-family: Arial;
+background: linear-gradient(135deg,#1198e1,#0523ab);
+margin:0;
+padding:0;
+}
+
+.container{
+width:600px;
+margin:auto;
+margin-top:60px;
+}
+
+h1{
+text-align:center;
+color:#333;
+}
+
+.card{
+background:white;
+padding:25px;
+margin-top:20px;
+border-radius:10px;
+box-shadow:0 8px 20px rgba(0,0,0,0.2);
+}
+
+input{
+width:100%;
+padding:10px;
+margin-top:10px;
+border-radius:6px;
+border:1px solid #ccc;
+font-size:14px;
+}
+
+button{
+margin-top:15px;
+padding:10px;
+width:100%;
+background:#007bff;
+color:white;
+border:none;
+border-radius:6px;
+font-size:16px;
+cursor:pointer;
+}
+
+button:hover{
+background:#0056b3;
+}
+
+table{
+width:100%;
+margin-top:20px;
+border-collapse:collapse;
+}
+
+th{
+background:#007bff;
+color:white;
+padding:10px;
+}
+
+td{
+padding:10px;
+text-align:center;
+border-bottom:1px solid #ddd;
+}
+
+tr:hover{
+background:#f1f1f1;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="container">
+
+<h1>STUDENT MANAGEMENT SYSTEM</h1>
+
+<div class="card">
+
+<h2>Add Student</h2>
+
+<input id="name" placeholder="Student Name">
+<input id="roll" placeholder="Roll Number">
+<input id="dept" placeholder="Department">
+
+<button onclick="addStudent()">Add Student</button>
+
+</div>
+
+<div class="card">
+
+<h2>Search Student</h2>
+
+<input id="search" placeholder="Search">
+
+<button onclick="searchStudent()">Search</button>
+
+<table>
+
+<thead>
+<tr>
+<th>Name</th>
+<th>Roll No</th>
+<th>Department</th>
+</tr>
+</thead>
+
+<tbody id="tableBody">
+</tbody>
+
+</table>
+
+</div>
+
+</div>
+
+<script>
+
+function addStudent(){
+
+fetch("http://localhost:5000/students",{
+
+method:"POST",
+
+headers:{
+"Content-Type":"application/json"
+},
+
+body:JSON.stringify({
+
+name:document.getElementById("name").value,
+rollNo:document.getElementById("roll").value,
+department:document.getElementById("dept").value
+
+})
+
+})
+.then(res=>res.json())
+.then(data=>{
+
+alert("Student Added")
+
+document.getElementById("name").value=""
+document.getElementById("roll").value=""
+document.getElementById("dept").value=""
+
+})
+
+}
+
+function searchStudent(){
+
+const search=document.getElementById("search").value
+
+fetch("http://localhost:5000/students?search="+search)
+
+.then(res=>res.json())
+.then(data=>{
+
+const table=document.getElementById("tableBody")
+
+table.innerHTML=""
+
+data.forEach(s=>{
+
+const row=document.createElement("tr")
+
+row.innerHTML=`
+<td>${s.name}</td>
+<td>${s.rollNo}</td>
+<td>${s.department}</td>
+`
+
+table.appendChild(row)
+
+})
+
+})
+
+}
+
+</script>
+
+</body>
+</html>
